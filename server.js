@@ -245,14 +245,15 @@ fu.get("/send", function (req, res) {
 
   session.poke();
 
-  var re=/(http:\/\/(www\.)?youtube\.com\/watch\?v=\S+)/;
+  var re=/(http(s*):\/\/(www\.)?youtube\.com\/watch\?v=\S+)/;
   
   if (re.test(text)) {
         medias = re.exec(text);
-        if (nowPlaying == false && mediaPlaylist.length==0)
+        if (nowPlaying == false && mediaPlaylist.length==0) {
             //skip playlist
             channel.appendMessage(session.nick, "play", medias[0])
-        else {
+            nowPlaying = medias[0]
+        } else {
             channel.appendMessage(session.nick, "queue", medias[0]);
             mediaPlaylist.push(medias[0]);
         }
