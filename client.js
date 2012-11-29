@@ -366,10 +366,28 @@ function longPoll (data) {
 
 //submit a new message to the server
 function send(msg) {
+    var cur_msg = msg;
   if (CONFIG.debug === false) {
     // XXX should be POST
     // XXX should add to messages immediately
-    jQuery.get("/send", {id: CONFIG.id, text: msg}, function (data) { }, "json");
+    //jQuery.get("/send", {id: CONFIG.id, text: msg}, function (data) { }, "json");
+    jQuery.ajax({
+        url: '/send',
+        data: {id: CONFIG.id, text: msg},
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {},
+        error: function (xhr, textStatus, errorThrown) {
+            var err = jQuery.parseJSON(xhr.responseText);
+            addMessage('<<', 'message not sent: ' + cur_msg, new Date().getTime(), 'error');
+            if (err.error == 'No such session id' && !CONFIG.isRejoining) {
+                CONFIG.isRejoining = true;
+                setTimeout(function () {
+                    joinAs(CONFIG.nick); CONFIG.isRejoining = false;
+                }, 1000);
+            }
+        }
+    });
   }
 }
 
@@ -449,6 +467,8 @@ function onConnect (session) {
     updateTitle();
   });
 
+  // FIXME: possible stacked event on rejoin session
+  
   // play it loud baby!
   jwplayer('my-video').setup({
         file: media,
@@ -485,6 +505,20 @@ function who () {
   }, "json");
 }
 
+function joinAs(nick) {
+  $.ajax({ cache: false
+           , type: "GET" // XXX should be POST
+           , dataType: "json"
+           , url: "/join"
+           , data: { nick: nick }
+           , error: function () {
+               alert("error connecting to server");
+               showConnect();
+             }
+           , success: onConnect
+           });
+}
+
 $(document).ready(function() {
 
   //submit new messages when the user hits enter if the message isnt blank
@@ -518,17 +552,7 @@ $(document).ready(function() {
     }
 
     //make the actual join request to the server
-    $.ajax({ cache: false
-           , type: "GET" // XXX should be POST
-           , dataType: "json"
-           , url: "/join"
-           , data: { nick: nick }
-           , error: function () {
-               alert("error connecting to server");
-               showConnect();
-             }
-           , success: onConnect
-           });
+    joinAs(nick);
     return false;
   });
 
