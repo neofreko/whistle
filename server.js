@@ -83,6 +83,7 @@ var channel = new function () {
 var welcomeMedia = "http://www.youtube.com/watch?v=0UIB9Y4OFPs";
 var mediaPlaylist = [];
 var currentDJSessionID = false;
+var nowPlaying = false;
 
 var sessions = {};
 var sessions_length = 0;
@@ -246,10 +247,14 @@ fu.get("/send", function (req, res) {
   var re=/(http:\/\/(www\.)?youtube\.com\/watch\?v=\S+)/;
   
   if (re.test(text)) {
-    medias = re.exec(text);
-    channel.appendMessage(session.nick, "queue", medias[0]);
-    mediaPlaylist.push(medias[0]);
-    // FIXME: if palylist is empty, auto play this
+        medias = re.exec(text);
+        if (nowPlaying == false && mediaPlaylist.length==0)
+            //skip playlist
+            channel.appendMessage(session.nick, "play", medias[0])
+        else {
+            channel.appendMessage(session.nick, "queue", medias[0]);
+            mediaPlaylist.push(medias[0]);
+        }
   } else
     channel.appendMessage(session.nick, "msg", text);
 
@@ -266,9 +271,15 @@ fu.get("/notify", function (req, res) {
     case "media-next":
       sys.puts('sender session: ' + session.nick + ' ' + session.idDJ?'is DJ':'not DJ')
       if (id==currentDJSessionID) {
-        var nextMedia = mediaPlaylist.shift();
-        channel.appendMessage(session.nick, "play", nextMedia)
-        sys.puts("notify "+ text+": "+nextMedia);
+          if (mediaPlaylist.length>0) {
+            var nextMedia = mediaPlaylist.shift();
+            channel.appendMessage(session.nick, "play", nextMedia)
+            nowPlaying = nextMedia;
+            sys.puts("notify "+ text+": "+nextMedia);
+        } else {
+            nowPlaying = false;
+            sys.puts("notify "+ text+": playlist is empty. Waiting for new media queue");
+        }
       }
       break;
   }
