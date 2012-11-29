@@ -284,7 +284,7 @@ fu.get("/send", function(req, res) {
                                 dataType: 'json',
                                 success: function(data) {
                                     sys.puts('finally got the data: '+data.stream_url)
-                                    callback(data.stream_url)
+                                    callback(data.stream_url+'?client_id=7752b2872de45cce9104b6feaa1e3582')
                                 }
                             })
                         }
