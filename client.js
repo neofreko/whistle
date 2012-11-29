@@ -385,7 +385,8 @@ function send(msg) {
                 setTimeout(function () {
                     joinAs(CONFIG.nick); CONFIG.isRejoining = false;
                 }, 1000);
-            }
+            } else
+                console.log(err);
         }
     });
   }
