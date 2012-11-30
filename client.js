@@ -486,6 +486,9 @@ function onConnect (session) {
         // notify server
         notify('media-next')
   });
+  jwplayer().onError(function() {
+        notify('media-next')
+  })
   
   //window.setTimeout("console.log('rock on!'); jwplayer().play()", 100);
 }
