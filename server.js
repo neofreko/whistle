@@ -15,7 +15,7 @@ var fu = require("./fu"),
         sys = require("util"),
         url = require("url"),
         qs = require("querystring"),
-        $ = require('nq');
+        $ = require('jquery');
 
 var MESSAGE_BACKLOG = 200,
         SESSION_TIMEOUT = 60 * 1000;
