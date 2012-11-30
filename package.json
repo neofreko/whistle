@@ -1,0 +1,7 @@
+{
+    "name":"pour-some-sugar-on-me",
+    "version":"0.0.1",
+    "dependencies":{
+        "jquery":""
+    }
+}
