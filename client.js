@@ -474,7 +474,7 @@ function onConnect (session) {
   jwplayer('my-video').setup({
         file: media,
         width: "480",
-        height: "640",
+        //height: "640",
         controls: true,
         autostart: true
         /*listbar: {
