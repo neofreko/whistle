@@ -103,3 +103,9 @@ a:hover { text-decoration: underline; color: #aaa; }*/
 #usersLink {
   color: inherit;
 }
+
+#jwplayer_container {
+  position: fixed;
+  padding: 1em;
+  content: "";
+}

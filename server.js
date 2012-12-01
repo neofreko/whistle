@@ -82,7 +82,10 @@ var channel = new function() {
     }, 3000);
 };
 
-var welcomeMedia = "http://ec-media.soundcloud.com/mS7BfTeKbteG.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595666fe0c07e9176e2615f66b4feb65275988d14654226b9ba4f4a1634cc012c47e7d90a18b5bf067dadbbfa9&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1354322349&Signature=eRBmOZuhrLOATaif9%2BptAgkg8zg%3D";//"http://api.soundcloud.com/tracks/61083298/stream?client_id=7752b2872de45cce9104b6feaa1e3582";//http://www.youtube.com/watch?v=0UIB9Y4OFPs";
+var welcomeMedia = "http://www.youtube.com/watch?v=U7mPqycQ0tQ";
+//"http://ec-media.soundcloud.com/mS7BfTeKbteG.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595666fe0c07e9176e2615f66b4feb65275988d14654226b9ba4f4a1634cc012c47e7d90a18b5bf067dadbbfa9&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1354322349&Signature=eRBmOZuhrLOATaif9%2BptAgkg8zg%3D";
+//"http://api.soundcloud.com/tracks/61083298/stream?client_id=7752b2872de45cce9104b6feaa1e3582";
+//http://www.youtube.com/watch?v=0UIB9Y4OFPs";
 var mediaPlaylist = [];
 var currentDJSessionID = false;
 var nowPlaying = false;

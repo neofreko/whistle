@@ -472,7 +472,7 @@ function onConnect (session) {
   // FIXME: possible stacked event on rejoin session
   
   // play it loud baby!
-  jwplayer('my-video').setup({
+  jwplayer('cjwplayer').setup({
         'modes': [
                     { type: 'html5' },
                     { type: 'flash' },

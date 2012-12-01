@@ -9,17 +9,18 @@
         <!-- Le styles -->
         <link rel="stylesheet" href="style.css" type="text/css"/>
         <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <style>
+            body {
+                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            }
+        </style>
         <title>Pour some sugar on me - Turntable wannabe</title>
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
           <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-
-        <!-- Fav and touch icons -->
-
     </head>
-
     <body>
 
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -33,10 +34,10 @@
                     <a class="brand" href="#">Pour some sugar on me</a>
                     <div class="nav-collapse collapse">
                         <ul id="status" class="nav pull-right">
-                                <li ><a id="usersLink" href="#">5 users</a></li>
-                                <li ><a href="#">uptime: <span id="uptime">?</span></a></li>
-                                <li ><a href="#">memory: <span id="rss">?</span>mb RSS</a></li>
-                            </ul>
+                            <li ><a id="usersLink" href="#">5 users</a></li>
+                            <li ><a href="#">uptime: <span id="uptime">?</span></a></li>
+                            <li ><a href="#">memory: <span id="rss">?</span>mb RSS</a></li>
+                        </ul>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
@@ -52,49 +53,55 @@
                                 This is a turntable.fm wannabe. People come in, paste youtube (and soundcloud) url, and enjoy curated video playlist. Both the client-side and server-side are written in javascript. The source code is
                                 <a href="http://github.com/neofreko/whistle/tree/master" target="_blank">here</a>.
                             </p>
-                            <form action="#" class="form-inline">
-                                <input id="nickInput" class="text"type="text" name="nick" value="" placeholder="Your nick name"/>
+                            <form action="#" class="form-inline">                                
+                                <input id="nickInput" type="text" name="nick" value="" placeholder="Your nick name"/>
                                 <input id="connectButton" class="btn inline" type="submit" name="" value="Join"/>
                             </form>
                         </div>
                         <div id="loading" class="hide"><p>loading</p></div>
                         <div id="log">
+                            
 
                         </div>
-                        <div id="toolbar">
-                            
-                            <input tabindex="1" type="text" id="entry" class="span7"/>
-                        </div>
+
                     </div>
 
                 </div>
                 <div class="span4" >
-                    <div id='my-video' style="background-color: black; height: 100%"></div>
+                    <div id="jwplayer_container">
+                    <div id="cjwplayer"></div>
+                    </div>
                 </div>
             </div>
 
+            <div id="toolbar">
+                <input tabindex="1" type="text" id="entry" class="span7"/>
+            </div>
         </div> <!-- /container -->
 
         <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="/js/bootstrap.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <script src="/jwplayer/jwplayer.js"></script>
         <script>jwplayer.key = "+NmiOJY4fBvfiTeNs+RkuZusVoKj+/kYlWmKzQ=="</script>
-        
+
         <script type="text/javascript" src="http://anywhere.embed.ly/scripts/afa7b782fb5e49e58b391a7808593115.js?t=1354335740"></script>
         <script type="text/javascript" src="http://scripts.embed.ly/jquery.embedly-2.1.7.js"></script>
         <script src="/client.js" type="text/javascript"></script>
         <script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36740954-1']);
-  _gaq.push(['_trackPageview']);
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-36740954-1']);
+            _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+            (function() {
+                var ga = document.createElement('script');
+                ga.type = 'text/javascript';
+                ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ga, s);
+            })();
 
-</script>
+        </script>
     </body>
 </html>
