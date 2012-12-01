@@ -207,7 +207,7 @@ function addMessage (from, text, time, _class) {
   //  the time,
   //  the person who caused the event,
   //  and the content
-  var messageElement = $(document.createElement("table"));
+  var messageElement = $(document.createElement("table")).attr('id', 't_' + time.getTime());
 
   messageElement.addClass("message");
   if (_class)
@@ -234,6 +234,7 @@ function addMessage (from, text, time, _class) {
 
   //the log is the stream that we view
   $("#log").append(messageElement);
+  $('#'+'t_' + time.getTime()).embedly(); /// embedly
 
   //always view the most recent message when it is added
   scrollDown();
