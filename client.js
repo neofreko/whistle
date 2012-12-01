@@ -521,8 +521,9 @@ function joinAs(nick) {
            , dataType: "json"
            , url: "/join"
            , data: { nick: nick }
-           , error: function () {
-               alert("error connecting to server");
+           , error: function (xhr, errorStatus, errorThrown) {
+               var err = $.parseJSON(xhr.responseText)
+               alert("Error: " + err.error);
                showConnect();
              }
            , success: onConnect
