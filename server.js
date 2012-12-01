@@ -196,7 +196,7 @@ fu.get("/join", function(req, res) {
     //sys.puts("connection: " + nick + "@" + res.connection.remoteAddress);
     // FIXME: use media from current playlist if availabl
     channel.appendMessage(session.nick, "join");
-    var media = nowPlaying ? nowPlaying : welcomeMedia;
+    var media = nowPlaying != false? nowPlaying : welcomeMedia;
     res.simpleJSON(200, {id: session.id
                 , nick: session.nick
                 , rss: mem.rss
