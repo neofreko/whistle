@@ -472,6 +472,11 @@ function onConnect (session) {
   
   // play it loud baby!
   jwplayer('my-video').setup({
+        'modes': [
+                    { type: 'html5' },
+                    { type: 'flash', src: '/jwplayer/player.swf' },
+                    { type: 'download'}
+                ],
         file: media,
         width: "480",
         //height: "640",

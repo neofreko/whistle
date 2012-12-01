@@ -15,6 +15,7 @@ var fu = require("./fu"),
         sys = require("util"),
         url = require("url"),
         qs = require("querystring"),
+        http = require("http")
         $ = require('jquery');
 
 var MESSAGE_BACKLOG = 200,
@@ -81,7 +82,7 @@ var channel = new function() {
     }, 3000);
 };
 
-var welcomeMedia = "http://www.youtube.com/watch?v=0UIB9Y4OFPs";
+var welcomeMedia = "http://ec-media.soundcloud.com/mS7BfTeKbteG.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595666fe0c07e9176e2615f66b4feb65275988d14654226b9ba4f4a1634cc012c47e7d90a18b5bf067dadbbfa9&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1354322349&Signature=eRBmOZuhrLOATaif9%2BptAgkg8zg%3D";//"http://api.soundcloud.com/tracks/61083298/stream?client_id=7752b2872de45cce9104b6feaa1e3582";//http://www.youtube.com/watch?v=0UIB9Y4OFPs";
 var mediaPlaylist = [];
 var currentDJSessionID = false;
 var nowPlaying = false;
@@ -283,8 +284,20 @@ fu.get("/send", function(req, res) {
                                 url: new_location.location,
                                 dataType: 'json',
                                 success: function(data) {
-                                    sys.puts('finally got the data: '+data.stream_url)
-                                    callback(data.stream_url+'?client_id=7752b2872de45cce9104b6feaa1e3582')
+                                    sys.puts('Will fetch playable URL from: '+data.stream_url+'?client_id=7752b2872de45cce9104b6feaa1e3582')
+                                    // but jwplayer cannot handle the redirect, so we'll gonna help it fetch the real stream url
+                                    var surl = url.parse(data.stream_url+'?client_id=7752b2872de45cce9104b6feaa1e3582')
+                                    http.get({host: surl.host, path: surl.path}, function(res) {
+                                      console.log("Got response: " + res.statusCode);
+
+                                      for(var item in res.headers) {
+                                        console.log(item + ": " + res.headers[item]);
+                                      }
+                                      console.log('Yay, REAL soundcloud jwplayer-playable url: ', res.headers['location'])
+                                      callback(res.headers['location']);
+                                    }).on('error', function(e) {
+                                      console.log("Got error: " + e.message);
+                                    });
                                 }
                             })
                         }
