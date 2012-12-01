@@ -308,6 +308,7 @@ fu.get("/send", function(req, res) {
     ]
 
     var media_resolver_callback = function(media) {
+        console.log('nowPlaying: ', nowPlaying, ' playlist: ', mediaPlaylist.length,' items')
         if (nowPlaying == false && mediaPlaylist.length == 0) {
             //skip playlist
             channel.appendMessage(session.nick, "play", media)
@@ -352,6 +353,7 @@ fu.get("/notify", function(req, res) {
                 } else {
                     nowPlaying = false;
                     sys.puts("notify " + text + ": playlist is empty. Waiting for new media queue");
+                    channel.appendMessage('chatmaster', 'msg', 'Playlist is empty, queue some more!')
                 }
             }
             break;
