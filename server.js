@@ -327,7 +327,7 @@ fu.get("/send", function(req, res) {
         if (re.re.test(text)) {
             var diff = (session.lastQueue - new Date())/1000
             console.log('lastQueue: ', session.lastQueue, ' diff: ',diff,' seconds')
-            var canQueue = (session.lastQueue == false) || (session.lastQueue && diff > 2) // two second ban
+            var canQueue = (session.lastQueue == false) || (session.lastQueue && diff > 2) || mediaPlaylist.length==0// two second ban
             if (canQueue) {
                 media = re.resolver(text, media_resolver_callback)
                 resolved = true
