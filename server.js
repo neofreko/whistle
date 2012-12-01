@@ -105,6 +105,7 @@ function createSession(nick) {
     var session = {
         nick: nick,
         isDJ: sessions_length == 0,
+        lastQueue: false,
         id: Math.floor(Math.random() * 99999999999).toString(),
         timestamp: new Date(),
         poke: function() {
@@ -324,8 +325,18 @@ fu.get("/send", function(req, res) {
         var re = media_resolvers[idx]
         console.log(re)
         if (re.re.test(text)) {
-            media = re.resolver(text, media_resolver_callback)
-            resolved = true
+            var diff = (session.lastQueue - new Date())/1000
+            console.log('lastQueue: ', session.lastQueue, ' diff: ',diff,' seconds')
+            var canQueue = (session.lastQueue == false) || (session.lastQueue && diff > 2) // two second ban
+            if (canQueue) {
+                media = re.resolver(text, media_resolver_callback)
+                resolved = true
+                session.lastQueue = new Date();
+            } else {
+                channel.appendMessage('chatmaster', 'msg', session.nick + ', no queue flooding please')
+                resolved = true
+            }
+
             break
         }
     }
