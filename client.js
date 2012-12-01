@@ -475,7 +475,7 @@ function onConnect (session) {
   jwplayer('my-video').setup({
         'modes': [
                     { type: 'html5' },
-                    { type: 'flash', src: '/jwplayer/player.swf' },
+                    { type: 'flash' },
                     { type: 'download'}
                 ],
         file: media,
