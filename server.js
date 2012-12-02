@@ -151,6 +151,7 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 fu.get("/", fu.staticHandler("index.html"));
 fu.get("/style.css", fu.staticHandler("style.css"));
 fu.get("/client.js", fu.staticHandler("client.js"));
+fu.get("/plugin.js", fu.staticHandler("plugin.js"));
 fu.get("/jquery-1.2.6.min.js", fu.staticHandler("jquery-1.2.6.min.js"));
 fu.get("/jwplayer/jwplayer.flash.swf", fu.staticHandler("jwplayer/jwplayer.flash.swf"));
 fu.get("/jwplayer/jwplayer.html5.js", fu.staticHandler("jwplayer/jwplayer.html5.js"));
@@ -377,8 +378,8 @@ fu.get("/notify", function(req, res) {
                         console.log('botmp.length: ', botMediaPlaylist.length)
                         if (botMediaPlaylist.length == 0) {
                             console.log(nextMedia.similar_artists)
-                            if (nextMedia.similar_artists.length > 0) 
-                                populateBotMediaPlaylist(nextMedia.similar_artists[Math.floor(Math.random()*nextMedia.similar_artist.length)])
+                            if (nextMedia.similar_artists.length>0) 
+                                populateBotMediaPlaylist(nextMedia.similar_artists[Math.floor(Math.random()*nextMedia.similar_artists.length)])
                         }
                     } else {
                         nowPlaying = false;
@@ -402,9 +403,12 @@ function populateBotMediaPlaylist(keyword) {
         success: function(data) {
             botMediaPlaylist = [];
             for(var i=0;i<data.songs.length;i++) {
-                botMediaPlaylist.push(data.songs[i]);
-                console.log('queued: ', data.songs[i].title, ' from ', data.songs[i].artist)
-                if (i==1) break;
+                var song = data.songs[i]
+                if (/api\.soundcloud\.com/.test(song.url))
+                    continue; // we'll handle it later
+                botMediaPlaylist.push(song);
+                console.log('queued: ', song.title, ' from ', song.artist)
+                //if (i==1) break;
             }
         },
         error: function() {

@@ -331,11 +331,14 @@ function longPoll (data) {
           }
 
           addMessage(message.nick, '[play] '+newItem.file, message.timestamp);
-          
-          jwplayer().play(false).load(newItem).onError(function(message) {
-      console.log('Error: ', message, ', sending media-next')
-      notify('media-next')
-  }).play(true)
+          if (jwplayer())
+            jwplayer().play(false).load(newItem).onError(function(message) {
+                console.log('Error: ', message, ', sending media-next')
+                notify('media-next')
+            }).play(true)
+          else
+            setupJwPlayer(newItem)
+
           break;
       }
     }
@@ -404,6 +407,39 @@ function send(msg) {
 
 function notify(msg) {
   jQuery.get("/notify", {id: CONFIG.id, text: msg}, function (data) { }, "json");
+}
+
+function setupJwPlayer(media) {
+  //console.log('setup jwplayer: ', media)
+  var config = {
+        'modes': [
+                    { type: 'html5' },
+                    { type: 'flash' },
+                    { type: 'download'}
+                ],
+        width: "480",
+        //height: "640",
+        controls: true,
+        autostart: true,
+        /*plugins: {
+          '/plugin.js': {
+            text: 'Hello world!'
+          }
+        }*/
+  }
+  
+  if (typeof media == 'string') {
+    config.file = media;
+    //console.log('got string');
+  } else {
+    for(i in media)
+      config[i] = media.i
+    //console.log('got object');
+  }
+
+  jwplayer('cjwplayer').setup(config);
+
+  //console.log(jwplayer().getPlaylist())
 }
 
 //Transition the page to the state that prompts the user for a nickname
@@ -481,22 +517,7 @@ function onConnect (session) {
   // FIXME: possible stacked event on rejoin session
   
   // play it loud baby!
-  jwplayer('cjwplayer').setup({
-        'modes': [
-                    { type: 'html5' },
-                    { type: 'flash' },
-                    { type: 'download'}
-                ],
-        file: media,
-        width: "480",
-        //height: "640",
-        controls: true,
-        autostart: true
-        /*listbar: {
-            position: 'right',
-            //size: 320
-        },*/
-  });
+  setupJwPlayer(media);
   jwplayer('cjwplayer').onComplete(function() {
     console.log('next song please')
     // notify server
@@ -506,8 +527,6 @@ function onConnect (session) {
       console.log('Error: ', message, '. sending media-next')
       notify('media-next')
   })
-
-  jwplayer().player.addEventListener() 
   
   //window.setTimeout("console.log('rock on!'); jwplayer().play()", 100);
 }
