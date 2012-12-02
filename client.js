@@ -339,6 +339,9 @@ function longPoll (data) {
           else
             setupJwPlayer(newItem)
 
+          // check wether jwplayer can play the media. This is a work around for non-firing onError event
+          setTimeout(function () {var status=jwplayer().getState(); if (status == 'IDLE' || status == undefined) notify('media-next')}, 100)
+
           break;
       }
     }
