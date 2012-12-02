@@ -82,9 +82,9 @@ var channel = new function() {
     }, 3000);
 };
 
-var welcomeMedia = "http://www.youtube.com/watch?v=U7mPqycQ0tQ";
-//"http://ec-media.soundcloud.com/mS7BfTeKbteG.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595666fe0c07e9176e2615f66b4feb65275988d14654226b9ba4f4a1634cc012c47e7d90a18b5bf067dadbbfa9&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1354322349&Signature=eRBmOZuhrLOATaif9%2BptAgkg8zg%3D";
-//"http://api.soundcloud.com/tracks/61083298/stream?client_id=7752b2872de45cce9104b6feaa1e3582";
+var welcomeMedia = 
+//"http://www.youtube.com/watch?v=U7mPqycQ0tQ";
+"http://ec-media.soundcloud.com/mS7BfTeKbteG.128.mp3?ff61182e3c2ecefa438cd02102d0e385713f0c1faf3b0339595666fe0c07e9176e2615f66b4feb65275988d14654226b9ba4f4a1634cc012c47e7d90a18b5bf067dadbbfa9&AWSAccessKeyId=AKIAJ4IAZE5EOI7PA7VQ&Expires=1354322349&Signature=eRBmOZuhrLOATaif9%2BptAgkg8zg%3D";
 //http://www.youtube.com/watch?v=0UIB9Y4OFPs";
 var mediaPlaylist = [];
 var currentDJSessionID = false;
@@ -356,9 +356,12 @@ fu.get("/notify", function(req, res) {
     var text = qs.parse(url.parse(req.url).query).text;
     var session = sessions[id];
 
+    console.log('>> /notify/', text)
+
     switch (text) {
         case "media-next":
-            sys.puts('sender session: ' + session.nick + ' ' + session.idDJ ? 'is DJ' : 'not DJ')
+            if (session)
+                sys.puts('sender session: ' + session.nick + ' ' + session.idDJ ? 'is DJ' : 'not DJ')
             if (id == currentDJSessionID) {
                 if (mediaPlaylist.length > 0) {
                     var nextMedia = mediaPlaylist.shift();
@@ -371,6 +374,12 @@ fu.get("/notify", function(req, res) {
                         channel.appendMessage(session.nick, "play", JSON.stringify({file: nextMedia.url, type: 'mp3'}))
                         nowPlaying = nextMedia.url;
                         console.log('playing media from botMediaPlaylist: ', nextMedia.title, ' - ', nextMedia.artist)
+                        console.log('botmp.length: ', botMediaPlaylist.length)
+                        if (botMediaPlaylist.length == 0) {
+                            console.log(nextMedia.similar_artists)
+                            if (nextMedia.similar_artists.length > 0) 
+                                populateBotMediaPlaylist(nextMedia.similar_artists[Math.floor(Math.random()*nextMedia.similar_artist.length)])
+                        }
                     } else {
                         nowPlaying = false;
                         sys.puts("notify " + text + ": playlist is empty. Waiting for new media queue");
@@ -380,12 +389,12 @@ fu.get("/notify", function(req, res) {
             }
             break;
     }
+
     res.simpleJSON(200, {rss: mem.rss});
 });
 
-fu.get("/bot-start", function(req, res) {
-    var keyword = qs.parse(url.parse(req.url).query).k;
-
+function populateBotMediaPlaylist(keyword) {
+    console.log('About to populate botMediaPlaylist using keyword: ', keyword)
     //http://ex.fm/api/v3/song/search/silverchair
     $.ajax({
         url: 'http://ex.fm/api/v3/song/search/'+keyword,
@@ -395,12 +404,19 @@ fu.get("/bot-start", function(req, res) {
             for(var i=0;i<data.songs.length;i++) {
                 botMediaPlaylist.push(data.songs[i]);
                 console.log('queued: ', data.songs[i].title, ' from ', data.songs[i].artist)
+                if (i==1) break;
             }
         },
         error: function() {
             console.log('Cannot search exfm');
         }
     })
+}
+
+fu.get("/bot-start", function(req, res) {
+    var keyword = qs.parse(url.parse(req.url).query).k;
+
+    populateBotMediaPlaylist(keyword)
 
     res.simpleJSON(200, {rss: mem.rss});
 })

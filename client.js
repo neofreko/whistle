@@ -330,12 +330,12 @@ function longPoll (data) {
             };
           }
 
-          console.log(newItem)
-
           addMessage(message.nick, '[play] '+newItem.file, message.timestamp);
           
-          jwplayer().play(false);
-          jwplayer().load(newItem).play(true)
+          jwplayer().play(false).load(newItem).onError(function(message) {
+      console.log('Error: ', message, ', sending media-next')
+      notify('media-next')
+  }).play(true)
           break;
       }
     }
@@ -497,13 +497,17 @@ function onConnect (session) {
             //size: 320
         },*/
   });
-  jwplayer().onComplete(function() {
-        // notify server
-        notify('media-next')
+  jwplayer('cjwplayer').onComplete(function() {
+    console.log('next song please')
+    // notify server
+    notify('media-next')
   });
-  jwplayer().onError(function() {
-        notify('media-next')
+  jwplayer('cjwplayer').onError(function(message) {
+      console.log('Error: ', message, '. sending media-next')
+      notify('media-next')
   })
+
+  jwplayer().player.addEventListener() 
   
   //window.setTimeout("console.log('rock on!'); jwplayer().play()", 100);
 }
