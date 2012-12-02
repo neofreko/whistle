@@ -521,6 +521,8 @@ function onConnect (session) {
   
   // play it loud baby!
   setupJwPlayer(media);
+  // check wether jwplayer can play the media. This is a work around for non-firing onError event
+          setTimeout(function () {var status=jwplayer().getState(); if (status == 'IDLE' || status == undefined) notify('media-next')}, 100)
   jwplayer('cjwplayer').onComplete(function() {
     console.log('next song please')
     // notify server
