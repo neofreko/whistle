@@ -320,13 +320,22 @@ function longPoll (data) {
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
-          addMessage(message.nick, '[play] '+message.text, message.timestamp);
-          var newItem = {
-              file: message.text
-          };
+          var newItem = null
+          
+          try {
+            newItem = $.parseJSON(message.text)
+          } catch (e) {
+            newItem = {
+                file: message.text
+            };
+          }
+
+          console.log(newItem)
+
+          addMessage(message.nick, '[play] '+newItem.file, message.timestamp);
+          
           jwplayer().play(false);
-          jwplayer().load(newItem);
-          jwplayer().play(true);
+          jwplayer().load(newItem).play(true)
           break;
       }
     }

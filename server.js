@@ -89,6 +89,7 @@ var welcomeMedia = "http://www.youtube.com/watch?v=U7mPqycQ0tQ";
 var mediaPlaylist = [];
 var currentDJSessionID = false;
 var nowPlaying = false;
+var botMediaPlaylist = []
 
 var sessions = {};
 var sessions_length = 0;
@@ -365,12 +366,41 @@ fu.get("/notify", function(req, res) {
                     nowPlaying = nextMedia;
                     sys.puts("notify " + text + ": " + nextMedia);
                 } else {
-                    nowPlaying = false;
-                    sys.puts("notify " + text + ": playlist is empty. Waiting for new media queue");
-                    channel.appendMessage('chatmaster', 'msg', 'Playlist is empty, queue some more!')
+                    if (botMediaPlaylist.length > 0) {
+                        var nextMedia = botMediaPlaylist.shift();
+                        channel.appendMessage(session.nick, "play", JSON.stringify({file: nextMedia.url, type: 'mp3'}))
+                        nowPlaying = nextMedia.url;
+                        console.log('playing media from botMediaPlaylist: ', nextMedia.title, ' - ', nextMedia.artist)
+                    } else {
+                        nowPlaying = false;
+                        sys.puts("notify " + text + ": playlist is empty. Waiting for new media queue");
+                        channel.appendMessage('chatmaster', 'msg', 'Playlist is empty, queue some more!')
+                    }
                 }
             }
             break;
     }
     res.simpleJSON(200, {rss: mem.rss});
 });
+
+fu.get("/bot-start", function(req, res) {
+    var keyword = qs.parse(url.parse(req.url).query).k;
+
+    //http://ex.fm/api/v3/song/search/silverchair
+    $.ajax({
+        url: 'http://ex.fm/api/v3/song/search/'+keyword,
+        dataType: 'json',
+        success: function(data) {
+            botMediaPlaylist = [];
+            for(var i=0;i<data.songs.length;i++) {
+                botMediaPlaylist.push(data.songs[i]);
+                console.log('queued: ', data.songs[i].title, ' from ', data.songs[i].artist)
+            }
+        },
+        error: function() {
+            console.log('Cannot search exfm');
+        }
+    })
+
+    res.simpleJSON(200, {rss: mem.rss});
+})
