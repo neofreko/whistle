@@ -173,8 +173,8 @@ function getNicks() {
 
 function pickNewDJ() {
     var idx = Math.floor(Math.random() * sessions.length);
-    return sessions[idx].nick;
-
+    var session = sessions[idx].nick;
+    
     currentDJSessionID = session.id;
 }
 
